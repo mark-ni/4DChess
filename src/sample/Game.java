@@ -1,9 +1,14 @@
 package sample;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.TextAlignment;
 
 import java.util.ArrayList;
 
@@ -100,16 +105,20 @@ public class Game extends HBox {
             capturedPiecesUpdates.setText(" ");
         }
 
-        moveTracker.getItems().add("Turn " + turn + ": P" + whoseTurn +
-                board.getSquare(currSquareCoors).getPiece().getType() + ": (" + currSquareCoors[0] + "," +
+        moveTracker.getItems().add("Turn " + turn + " P" + whoseTurn + ": " +
+                board.getSquare(currSquareCoors).getPiece().getType() + " (" + currSquareCoors[0] + "," +
                 currSquareCoors[1] + "," + currSquareCoors[2] + "," + currSquareCoors[3] + ") -> (" + position[0] +
                 "," + position[1] + "," + position[2] + "," + position[3] + ")");
 
-        board.getSquare(position).setPiece(board.getSquare(currSquareCoors).getPiece());
-        board.getSquare(position).getPiece().setPosition(position);
+        if (board.getSquare(currSquareCoors).getPiece().type.equals("P") && position[0]%7 == 0 && position[2]%7 == 0) {
+            board.addPiece(new Queen(players[whoseTurn]), position);
+            moveTracker.getItems().add("P" + whoseTurn + ": P -> Q");
+        } else {
+            board.getSquare(position).setPiece(board.getSquare(currSquareCoors).getPiece());
+            board.getSquare(position).getPiece().setPosition(position);
+        }
         board.getSquare(currSquareCoors).setPiece(null);
         clearHighlights();
-
 
         if (isGameOver) {
             gameOver();
@@ -131,60 +140,102 @@ public class Game extends HBox {
     }
 
     public void setUpInterface() {
+        int paneWidth = (Main.width - Main.height)/2;
+        System.out.println(paneWidth);
+
         leftPane = new VBox();
 
         leftPaneSection1 = new HBox();
         p1CapturedPiecesBox = new VBox();
         p1CapturedPiecesLabel = new Label(players[1].getName() + "'s Captured Pieces");
+        p1CapturedPiecesLabel.setPrefSize(paneWidth - 20, Main.height * 0.03);
+        p1CapturedPiecesLabel.setTextAlignment(TextAlignment.CENTER);
+        p1CapturedPiecesLabel.setFont(Font.font("Futura", 20));
+        for (String x:Font.getFamilies()) {
+            System.out.println(x);
+        }
         p1CapturedPiecesScroller = new ScrollPane();
         p1CapturedPieces = new ListView<>();
         p1CapturedPiecesScroller.setContent(p1CapturedPieces);
+        p1CapturedPiecesScroller.setPrefHeight(Main.height * 0.4);
         p1CapturedPiecesBox.getChildren().addAll(p1CapturedPiecesLabel, p1CapturedPiecesScroller);
+        p1CapturedPiecesBox.setSpacing(5);
         leftPaneSection1.getChildren().add(p1CapturedPiecesBox);
 
         leftPaneSection2 = new HBox();
         p2CapturedPiecesBox = new VBox();
         p2CapturedPiecesLabel = new Label(players[2].getName() + "'s Captured Pieces");
+        p2CapturedPiecesLabel.setPrefSize(paneWidth - 20, Main.height * 0.03);
+        p2CapturedPiecesLabel.setFont(Font.font("Futura", 20));
+        p2CapturedPiecesLabel.setTextAlignment(TextAlignment.CENTER);
+
         p2CapturedPiecesScroller = new ScrollPane();
         p2CapturedPieces = new ListView<>();
         p2CapturedPiecesScroller.setContent(p2CapturedPieces);
+        p2CapturedPiecesScroller.setPrefHeight(Main.height * 0.4);
         p2CapturedPiecesBox.getChildren().addAll(p2CapturedPiecesLabel, p2CapturedPiecesScroller);
+        p2CapturedPiecesBox.setSpacing(5);
         leftPaneSection2.getChildren().add(p2CapturedPiecesBox);
 
         leftPaneSection3 = new HBox();
         capturedPiecesUpdates = new Label();
+        capturedPiecesUpdates.setTextAlignment(TextAlignment.CENTER);
+        capturedPiecesUpdates.setAlignment(Pos.CENTER);
+        capturedPiecesUpdates.setFont(Font.font("Futura", 15));
         leftPaneSection3.getChildren().add(capturedPiecesUpdates);
 
         leftPane.getChildren().addAll(leftPaneSection1, leftPaneSection2, leftPaneSection3);
+        leftPane.setAlignment(Pos.CENTER);
+        leftPane.setPadding(new Insets(10, 10, 10, 10));
+        leftPane.setSpacing(10);
+        leftPane.setPrefSize(paneWidth, Main.height);
 
 
         rightPane = new VBox();
 
-        banner = new ImageView();
+        banner = new ImageView("sample/bannertext.png");
 
         rightPaneSection1 = new HBox();
         turnCounterBox = new Label();
+        turnCounterBox.setPrefSize(paneWidth - 20, Main.height * 0.05);
+        turnCounterBox.setFont(Font.font("Futura", 20));
+        turnCounterBox.setTextAlignment(TextAlignment.CENTER);
         rightPaneSection1.getChildren().add(turnCounterBox);
 
         rightPaneSection2 = new HBox();
         moveTrackerBox = new VBox();
         moveTrackerLabel = new Label("List of Moves Made");
+        moveTrackerLabel.setPrefSize(paneWidth - 20, Main.height * 0.05);
+        moveTrackerLabel.setFont(Font.font("Futura", 20));
+        moveTrackerLabel.setTextAlignment(TextAlignment.CENTER);
         moveTrackerScroller = new ScrollPane();
         moveTracker = new ListView<>();
         moveTrackerScroller.setContent(moveTracker);
+        moveTrackerScroller.setMinHeight(Main.height * 0.5);
         moveTrackerBox.getChildren().addAll(moveTrackerLabel, moveTrackerScroller);
         rightPaneSection2.getChildren().add(moveTrackerBox);
 
         rightPaneSection3 = new VBox();
         resetButton = new Button("Reset");
         resetButton.setOnAction((event) -> reset(players[1], players[2]));
+        resetButton.setPrefSize(paneWidth - 20, Main.height / 9);
+        resetButton.setAlignment(Pos.CENTER);
         mainMenuButton = new Button("Main Menu");
+        mainMenuButton.setPrefSize(paneWidth - 20, Main.height / 9);
         mainMenuButton.setDisable(true);
+        mainMenuButton.setAlignment(Pos.CENTER);
         rightPaneSection3.getChildren().addAll(resetButton, mainMenuButton);
+        rightPaneSection3.setSpacing(15);
 
         rightPane.getChildren().addAll(banner, rightPaneSection1, rightPaneSection2, rightPaneSection3);
+        rightPane.setAlignment(Pos.CENTER);
+        rightPane.setPadding(new Insets(10, 10, 10, 10));
+        rightPane.setSpacing(10);
+        rightPane.setPrefSize(paneWidth, Main.height);
 
         this.getChildren().addAll(leftPane, board, rightPane);
+        this.setAlignment(Pos.CENTER);
+        this.setSpacing(10);
     }
 
     public static void gameOver() {

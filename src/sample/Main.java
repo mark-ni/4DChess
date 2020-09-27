@@ -24,23 +24,21 @@ public class Main extends Application {
     private Label piece1;
     private VBox box1;
 
-    private int screenWidth = (int) Screen.getPrimary().getBounds().getMaxX();
-    private int screenHeight = (int) Screen.getPrimary().getBounds().getMaxY();
-    public static int size;
+    public static int width = (int) Screen.getPrimary().getBounds().getMaxX();
+    public static int height = (int) Screen.getPrimary().getBounds().getMaxY();
 
     @Override
     public void start(Stage primaryStage) {
-        size = Math.min(screenHeight, screenWidth);
-
-        Player p1 = new Player("Mark");
-        Player p2 = new Player("Charseph");
+        Player p1 = new Player("Player 1");
+        Player p2 = new Player("Player 2");
 
         Game game = new Game(p1, p2);
 
         StackPane root = new StackPane();
         root.getChildren().add(game);
         primaryStage.setTitle("4D Chess");
-        primaryStage.setScene(new Scene(root, size, size));
+        primaryStage.setScene(new Scene(root, width, height));
+        primaryStage.setFullScreen(true);
         primaryStage.show();
     }
 

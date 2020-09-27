@@ -18,8 +18,8 @@ public class GridSquare extends Button {
 
     public GridSquare() {
         setPadding(new Insets(0, 0, 0, 0));
-        setPrefSize((double) Main.size/64 - 1, (double) Main.size/64 - 1);
-        setFont(Font.font("Verdana", FontWeight.BOLD, 8));
+        setPrefSize((double) Main.height/64 - 1, (double) Main.height/64 - 1);
+        setFont(Font.font("Verdana", FontWeight.BOLD, Main.height/64 - 4));
         setBorder(new Border(new BorderStroke(Color.BLACK,
                 BorderStrokeStyle.SOLID, CornerRadii.EMPTY, BorderWidths.DEFAULT)));
 
